@@ -36,8 +36,12 @@ class Board
     @solved
   end
 
+  def get_code
+    Peg.colorize(@pegs)
+  end
+
   def prompt
-    puts  "  Solution [#{Peg.colorize(@pegs)}]" if @debugging
+    puts  "  Solution [#{get_code}]" if @debugging
     print "Your guess [#{Peg::choices}]? \e[0J"
     gets.chomp.upcase.gsub(/\s+/,'') # Upcase and squeeze white space
   end
@@ -57,20 +61,16 @@ class Board
 
   # Busting this logic out to make it easier to test against (see below)
   def quality_of guesses
-    exactly = nearly = 0
-    pcnt    = Hash.new 0 # tracks number of times a peg tallies
+    pcnt = Hash.new 0 # tracks number of times a peg tallies
 
     # Look for exact matches first.
     guesses.zip(@pegs).each {|guess,peg| pcnt[peg] += 1 if peg == guess}
     exactly = pcnt.values.reduce(:+) || 0 # use stuff we learnt
 
-    # Now look for close matches.
-    guesses.each do |peg|
-      if (@pegs.include? peg) && (pcnt[peg] < @pmax[peg])
-        pcnt[peg] += 1
-        nearly    += 1
-      end
-    end
+    # Now count close matches.
+    guesses.each {|peg| pcnt[peg] += 1 if (@pegs.include? peg) &&
+                                          (pcnt[peg] < @pmax[peg])}
+    nearly = pcnt.length == 0? 0 : pcnt.values.reduce(:+) - exactly
 
     [exactly, nearly]
   end
@@ -99,8 +99,9 @@ end
 if __FILE__ == $0
   board = Board.new.reset 'BCBY'
 
-  puts "\n#{Peg.colorize(board.pegs)} <= Answer\n\n"
+  puts "\n#{board.get_code} <= Answer\n\n"
   [
+    ['MMGG', 0, 0],
     ['BBYY', 2, 1],
     ['BBGG', 1, 1],
     ['CCCC', 1, 0],
@@ -110,7 +111,7 @@ if __FILE__ == $0
   ].each do |guess_str,exactly,nearly|
     guess = guess_str.split(//)
     (qExactly, qNearly) = board.quality_of guess
-    printf "#{Peg.colorize(guess)} #{exactly}.#{nearly} == #{qExactly}.#{qNearly} ? %s\n",
+    printf "#{Peg.colorize(guess)} #{qExactly}.#{qNearly} == #{exactly}.#{nearly} ? %s\n",
       (exactly == qExactly && nearly == qNearly ? "PASS" : "FAIL")
   end
   puts

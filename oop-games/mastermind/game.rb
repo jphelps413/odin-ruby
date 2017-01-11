@@ -11,9 +11,9 @@ class Game
     @board = Board.new
   end
 
-  def results
+  def show_results
     printf "\n\n\n%s\n\n", @board.solved? ? 'We have a winner!!!' :
-                                            'You lose, try again!'
+        "You lose, the code was [#{@board.get_code}], try again!"
   end
 
   # Computer generates pegs and the player guesses
@@ -24,14 +24,14 @@ class Game
       return if user_guess == 'Q'
       @board.guess user_guess
     end
-    results
+    show_results
   end
 
   # A random board is generated and the computer attempts to solve
   def maker
     @board.reset.show true
     Breaker.new(@board).solve
-    results
+    show_results
   end
 
   def run
