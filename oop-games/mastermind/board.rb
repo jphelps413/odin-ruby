@@ -22,7 +22,7 @@ class Board
     @guesses = Array.new
     @pegs    = preset.nil? ? Peg.randomize : preset.upcase.split(//)
 
-    # Use pmax to limit the numberr of times a peg can be reported per turn.
+    # Use pmax to limit the number of times a peg can be reported per turn.
     @pmax = Hash.new 0
     @pegs.each {|p| @pmax[p] += 1}
     self # supports method daisy chaining
