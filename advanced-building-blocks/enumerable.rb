@@ -14,12 +14,14 @@ module Enumerable
     for o in self
       yield(o)
     end
+    self
   end
 
   def my_each_with_index
     return self.to_enum(__method__) unless block_given?
     i = 0
     self.my_each {|o| yield(o,i); i+= 1}
+    self
   end
 
   def my_select
