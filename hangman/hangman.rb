@@ -3,6 +3,7 @@
 # vi: set ft=ruby :
 
 require 'json'
+require 'pry-byebug'
 
 # We only support the notion of one save file, which gets deleted if the
 # word is guessed or a new game is started.
@@ -79,6 +80,7 @@ class Hangman
     while not_a_loser do
       show_progress
       guess = gets.chomp.downcase
+      binding.pry if guess == '>'
       next if guess == ''
       next if @guesses.include?(guess)
       save_and_quit if guess == '!'
