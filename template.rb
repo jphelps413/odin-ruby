@@ -12,3 +12,18 @@ class MyNewfangledClass
   end
 
 end
+
+# Only run the embedded guess quality testing here.
+if __FILE__ == $0
+
+  def pass_fail cdx
+    cdx ? 'PASS':'FAIL'
+  end
+  puts
+  [
+    # Build test array here
+  ].each do |name,test|
+    printf "Testing %-16s: %s\n", name, pass_fail(test)
+  end
+  puts
+end

@@ -18,24 +18,30 @@ end
 
 # Test case results were verified with http://www.xarg.org/tools/caesar-cipher/
 #
-tests = [
-  [  5, 'What a string!',
-        'Bmfy f xywnsl!'
-  ],
-  [ 13, 'The quick brown fox jumps over the lazy dog, 13 times!?!',
-        'Gur dhvpx oebja sbk whzcf bire gur ynml qbt, 13 gvzrf!?!',
-  ],
-  [
-     0, 'I better remain unscathed ,!@#$%123456',
-        'I better remain unscathed ,!@#$%123456',
-  ],
-  [ 30, 'Purposely fail',
-        'this one, m\'k?',
-  ],
-]
+# Only run the embedded guess quality testing here.
+if __FILE__ == $0
 
-puts "\nExpect three to PASS, and one to FAIL.\n"
-tests.each do |rotate, clear, cipher|
-  puts caesar_cipher( clear, rotate ) === cipher ? "PASS" : "FAIL"
+  def pass_fail cdx
+    cdx ? 'PASS':'FAIL'
+  end
+  puts "\nExpect three to PASS, and one to FAIL.\n"
+  [
+    [  5, 'What a string!',
+          'Bmfy f xywnsl!'
+    ],
+    [ 13, 'The quick brown fox jumps over the lazy dog, 13 times!?!',
+          'Gur dhvpx oebja sbk whzcf bire gur ynml qbt, 13 gvzrf!?!',
+    ],
+    [
+       0, 'I better remain unscathed ,!@#$%123456',
+          'I better remain unscathed ,!@#$%123456',
+    ],
+    [ 30, 'Purposely fail',
+          'this one, m\'k?',
+    ],
+  ].each do |rot,clear,cipher|
+    printf "Test Rot %2d: %s\n",
+                 rot, pass_fail( caesar_cipher( clear, rot ) === cipher )
+  end
+  puts
 end
-puts "\n"

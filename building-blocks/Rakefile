@@ -1,0 +1,16 @@
+# This Rakefile originated from the Learn Ruby section. A better solution
+# would be to restructure this directory into the standard spec/lib setup,
+# however, we are backfitting rspec in as an afterthought and want to avoid
+# messing to any linkages to student solutions from the Odin site.
+
+require 'rspec/core/rake_task'
+
+task :default => :spec
+
+desc 'run caesar cipher tests'
+RSpec::Core::RakeTask.new do |task|
+  dir = Rake.application.original_dir
+  task.pattern = "#{dir}/*_spec.rb"
+  task.rspec_opts = [ "-I#{dir}", '-f documentation', '-r ./rspec_config']
+  task.verbose = false
+end
