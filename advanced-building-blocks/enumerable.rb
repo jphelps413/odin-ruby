@@ -121,45 +121,49 @@ module Enumerable
   end
 end
 
-# For testing injection by hand. Optional parameter to control which
-# injection approach to test.
-def multiply_els ary, injector=1
-  case injector
-  when 1 then ary.my_inject(:*)
-  when 2 then ary.my_inject {|x,y|x*y}
-  else        ary.my_inject(ary.pop,:*)
+# Only run the embedded guess quality testing here.
+if __FILE__ == $0
+
+  # For testing injection by hand. Optional parameter to control which
+  # injection approach to test.
+  def multiply_els ary, injector=1
+    case injector
+    when 1 then ary.my_inject(:*)
+    when 2 then ary.my_inject {|x,y|x*y}
+    else        ary.my_inject(ary.pop,:*)
+    end
   end
-end
 
-def map_proc_block
-  puts ((1..10).my_map Proc.new {|x|x*x}).join(', ') # with a Proc
-  puts ((1..10).my_map          {|x|x*x}).join(', ') # with a Block
-end
+  def map_proc_block
+    puts ((1..10).my_map Proc.new {|x|x*x}).join(', ') # with a Proc
+    puts ((1..10).my_map          {|x|x*x}).join(', ') # with a Block
+  end
 
-# I should have taken the time to setup rspec - oh well.
-#
-# These tests are based on http://ruby-doc.org/core-2.4.0/Enumerable.html
-#
-[
-  ['all? 1', (%w[ant bear cat].my_all? { |word| word.length >= 3 }),  true ],
-  ['all? 2', (%w[ant bear cat].my_all? { |word| word.length >= 4 }),  false],
-  ['all? 3', ([nil, true, 99].my_all?),                               false],
-  ['any? 1', (%w[ant bear cat].my_any? { |word| word.length >= 3 }),  true ],
-  ['any? 2', (%w[ant bear cat].my_any? { |word| word.length >= 4 }),  true ],
-  ['any? 3', ([nil, true, 99].my_any?),                               true ],
-  ['none? 1',(%w{ant bear cat}.my_none? { |word| word.length == 5 }), true ],
-  ['none? 2',(%w{ant bear cat}.my_none? { |word| word.length >= 4 }), false],
-  ['none? 3',([].my_none?),                                           true ],
-  ['none? 4',([nil].my_none?),                                        true ],
-  ['none? 5',([nil, false].my_none?),                                 true ],
-  ['none? 6',([nil, false, true].my_none?),                           false],
-  ['count 1',([1,2,4,2].my_count == 4),                               true ],
-  ['count 2',([1,2,4,2].my_count(2) == 2),                            true ],
-  ['count 3',([1,2,4,2].my_count{|x| x%2==0} == 3),                   true ],
-  ['map 1',  ((1..4).my_map{|i|i*i} == [1,4,9,16]),                   true ],
-  ['map 2',  ((1..4).my_map{'cat'}  == ['cat','cat','cat','cat']),    true ],
-  ['injct 1',((5..10).my_inject(:+) == 45),                           true ],
-  ['injct 2',((5..10).my_inject{|s,n|s+n} == 45),                     true ],
-  ['injct 3',((5..10).my_inject(:*) == 151200),                       true ],
-  ['injct 4',((5..10).my_inject{|p,n|p*n} == 151200),                 true ],
-].my_each {|name,res,exp| printf "%8s: %s\n", name, res == exp ? 'PASS':'FAIL ***'}
+  # Most of these now reside in the rake/rspec setup.
+  #
+  # These tests are based on http://ruby-doc.org/core-2.4.0/Enumerable.html
+  #
+  [
+    ['all? 1', (%w[ant bear cat].my_all? { |word| word.length >= 3 }),  true ],
+    ['all? 2', (%w[ant bear cat].my_all? { |word| word.length >= 4 }),  false],
+    ['all? 3', ([nil, true, 99].my_all?),                               false],
+    ['any? 1', (%w[ant bear cat].my_any? { |word| word.length >= 3 }),  true ],
+    ['any? 2', (%w[ant bear cat].my_any? { |word| word.length >= 4 }),  true ],
+    ['any? 3', ([nil, true, 99].my_any?),                               true ],
+    ['none? 1',(%w{ant bear cat}.my_none? { |word| word.length == 5 }), true ],
+    ['none? 2',(%w{ant bear cat}.my_none? { |word| word.length >= 4 }), false],
+    ['none? 3',([].my_none?),                                           true ],
+    ['none? 4',([nil].my_none?),                                        true ],
+    ['none? 5',([nil, false].my_none?),                                 true ],
+    ['none? 6',([nil, false, true].my_none?),                           false],
+    ['count 1',([1,2,4,2].my_count == 4),                               true ],
+    ['count 2',([1,2,4,2].my_count(2) == 2),                            true ],
+    ['count 3',([1,2,4,2].my_count{|x| x%2==0} == 3),                   true ],
+    ['map 1',  ((1..4).my_map{|i|i*i} == [1,4,9,16]),                   true ],
+    ['map 2',  ((1..4).my_map{'cat'}  == ['cat','cat','cat','cat']),    true ],
+    ['injct 1',((5..10).my_inject(:+) == 45),                           true ],
+    ['injct 2',((5..10).my_inject{|s,n|s+n} == 45),                     true ],
+    ['injct 3',((5..10).my_inject(:*) == 151200),                       true ],
+    ['injct 4',((5..10).my_inject{|p,n|p*n} == 151200),                 true ],
+  ].my_each {|name,res,exp| printf "%8s: %s\n", name, res == exp ? 'PASS':'FAIL ***'}
+end
